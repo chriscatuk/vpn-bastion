@@ -1,0 +1,47 @@
+# Define your own values for the Variable in this file
+# Copy this file and remove .example to define the Variables
+#
+# See README.md for instructions
+#
+
+#All resources will have this Name tag (VPC, SG, IGW, Subnets...)
+vpcname = "VPN-Test"
+region = "eu-west-2"
+
+#Subnet of the VPC (will be divided in 3 Availability Zones)
+cidr = "172.30.200.0/22"
+
+#This hostname will be setup in Linux and added to Route 53 DNS Names
+#Should be FQDN, ex: vpn-test.domain.com
+hostname = "vpn-test.mydomain.com"
+route53_zoneID = "XXXXXXXXXX"
+
+# Enable IPv6 support, in Dual Stack mode
+# In Terraform v 0.11.5 can only be true, Soon ipv6 false possible.
+# Bug Issue 688: https://github.com/terraform-providers/terraform-provider-aws/issues/688
+# https://github.com/terraform-providers/terraform-provider-aws/pull/2103
+ipv6 = true
+
+# Tags added to all ressources in AWS
+deployment = "terraform"
+environment = "test"
+OWNER = "username"
+ROLE = "VPN Server compatible with iOS and MacOS native VPN Clients"
+AlwaysOn = "OFF" #Possible values are ON/OFF.
+
+# User with SSH and Sudo access.
+username = "username"
+
+# SSH Key Pair
+# Keyname must not exist before running the script
+keyname = "Put the Key Name here"
+# keypublic line will be added to ~/.ssh/authorized_keys
+keypublic = "ssh-rsa AAAAB3d....ddd email@domain.com" 
+
+# CIDR allowed for VPN traffic
+fw_all_cidr_ipv4 = [ "0.0.0.0/0" ]
+fw_all_cidr_ipv6 = [ "::/0" ]
+
+# CIDR allowed for SSH
+fw_ssh_cidr_ipv4 = [ "8.8.4.4/32", "8.8.8.8/32" ]
+fw_ssh_cidr_ipv6 = [ "2001:DB8::/32" ]

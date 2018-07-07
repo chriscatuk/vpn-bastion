@@ -1,9 +1,24 @@
-#  Local .terraform directories
-**/.terraform/*
-
-# .tfstate files
+# Compiled files
 *.tfstate
-*.tfstate.*
+*.tfstate.backup
 
-# .tfvars files
-*.tfvars
+# Module directory
+.terraform/
+
+# Compiled files
+*.tfstate
+*.tfstate.backup
+
+# Module directory
+.terraform/
+
+# Local Files
+*.backup
+
+# Terraform local vars
+terraform.tfvars
+*.terraform.tfstate.lock.info
+*.safe.tf
+
+# Ansible local
+*.retry
