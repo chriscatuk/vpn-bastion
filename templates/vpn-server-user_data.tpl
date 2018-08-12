@@ -28,12 +28,12 @@ runcmd:
  - export DEBIAN_FRONTEND=noninteractive
  - apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
  - apt-get install docker-ce docker-compose -y
- - git clone --depth=1 https://github.com/chriscatuk/aws-provisioning.git /opt/github/aws-provisioning
+ - git clone --depth=1 https://github.com/chriscatuk/vpn-bastion.git /opt/github/vpn-bastion
  - modprobe af_key
- - docker build -t ipsec-vpn-server-private /opt/github/aws-provisioning/projects/vpn-private/docker-ipsec-vpn-server
- - echo "      - VPN_PASSWORD=${password}" >> /opt/github/aws-provisioning/projects/vpn-private/docker-ipsec-vpn-server/docker-compose.yml
- - echo "      - VPN_IPSEC_PSK=${psk}" >> /opt/github/aws-provisioning/projects/vpn-private/docker-ipsec-vpn-server/docker-compose.yml
- - docker-compose -f /opt/github/aws-provisioning/projects/vpn-private/docker-ipsec-vpn-server/docker-compose.yml up -d
+ - docker build -t ipsec-vpn-server-private /opt/github/vpn-bastion/docker-ipsec-vpn-server
+ - echo "      - VPN_PASSWORD=${password}" >> /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml
+ - echo "      - VPN_IPSEC_PSK=${psk}" >> /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml
+ - docker-compose -f /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml up -d
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
 
 power_state:
