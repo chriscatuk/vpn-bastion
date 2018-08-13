@@ -4,7 +4,7 @@
 # terraform apply -var vpcname='VPN-Test' -var ipv6=true -var region='eu-west-3'
 
 resource "aws_instance" "vpn_server" {
-	ami           = "${lookup(var.ubuntu_amis, var.region)}"
+  ami           = "${data.aws_ami.ami_amzn2.id}"
 	instance_type = "t2.micro"
   key_name = "${aws_key_pair.key.key_name}"
   subnet_id = "${aws_subnet.a.id}"
