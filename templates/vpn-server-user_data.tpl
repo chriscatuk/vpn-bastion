@@ -19,6 +19,9 @@ packages:
  - ca-certificates
  - curl
  - software-properties-common
+ - unzip
+ - stress
+ - make
 
 runcmd:
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
@@ -35,6 +38,8 @@ runcmd:
  - echo "      - VPN_IPSEC_PSK=${psk}" >> /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml
  - docker-compose -f /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml up -d
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
+ - wget https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip -P ~/
+ - unzip ~/terraform_0.11.7_linux_amd64.zip -d /usr/local/bin/
 
 power_state:
    delay: "now"
