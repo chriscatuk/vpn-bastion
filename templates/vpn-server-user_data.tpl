@@ -22,6 +22,7 @@ packages:
  - unzip
  - stress
  - make
+ - nfs-common
 
 runcmd:
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
