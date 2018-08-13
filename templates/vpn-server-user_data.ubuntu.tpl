@@ -12,23 +12,26 @@ users:
       - ${keypubic}
 
 packages:
- - amazon-efs-utils
+ - awscli
  - mtr
- - mailx
- - git
- - python3
- - docker
+ - fping
+ - apt-transport-https
+ - ca-certificates
  - curl
+ - software-properties-common
+ - unzip
  - stress
+ - make
+ - nfs-common
 
 runcmd:
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
- - [ sed, -i, -e, "s/HOSTNAME=.*/HOSTNAME=${hostname}/", /etc/sysconfig/network ]
- - [ yum, -y, update ]
- - sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose
- - sudo chmod +x /usr/bin/docker-compose
- - chkconfig docker on
- - systemctl start docker
+ - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+ - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+ - apt-get update
+ - export DEBIAN_FRONTEND=noninteractive
+ - apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+ - apt-get install docker-ce docker-compose -y
  - git clone --depth=1 https://github.com/chriscatuk/vpn-bastion.git /opt/github/vpn-bastion
  - modprobe af_key
  - docker build -t ipsec-vpn-server-private /opt/github/vpn-bastion/docker-ipsec-vpn-server
