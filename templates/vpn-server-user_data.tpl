@@ -23,6 +23,9 @@ packages:
  - yum-cron
 
 runcmd:
+ - git_repo=https://github.com/chriscatuk/vpn-bastion.git
+ - git_dir=/opt/github/vpn-bastion
+ - docker_dir=$${git_dir}/docker-ipsec-vpn-server
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
  - [ sed, -i, -e, "s/HOSTNAME=.*/HOSTNAME=${hostname}/", /etc/sysconfig/network ]
  - yum -y update
@@ -38,12 +41,12 @@ runcmd:
  - sudo chmod +x /usr/bin/docker-compose
  - chkconfig docker on
  - systemctl start docker
- - git clone --depth=1 https://github.com/chriscatuk/vpn-bastion.git /opt/github/vpn-bastion
+ - git clone --depth=1 $${git_repo} $${git_dir}
  - modprobe af_key
- - docker build -t ipsec-vpn-server-private /opt/github/vpn-bastion/docker-ipsec-vpn-server
- - echo "      - VPN_PASSWORD=${password}" >> /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml
- - echo "      - VPN_IPSEC_PSK=${psk}" >> /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml
- - docker-compose -f /opt/github/vpn-bastion/docker-ipsec-vpn-server/docker-compose.yml up -d
+ - docker build -t ipsec-vpn-server-private $${docker_dir}
+ - echo "      - VPN_PASSWORD=${password}" >> $${docker_dir}/docker-compose.yml
+ - echo "      - VPN_IPSEC_PSK=${psk}" >> $${docker_dir}/docker-compose.yml
+ - docker-compose -f $${docker_dir}/docker-compose.yml up -d
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
  - wget https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip -P ~/
  - unzip ~/terraform_0.11.7_linux_amd64.zip -d /usr/local/bin/
