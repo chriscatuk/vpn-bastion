@@ -26,10 +26,14 @@ runcmd:
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
  - [ sed, -i, -e, "s/HOSTNAME=.*/HOSTNAME=${hostname}/", /etc/sysconfig/network ]
  - yum -y update
- - sed -i -e 's/update_cmd = default/update_cmd = security/g' /etc/yum/yum-cron.conf
- - sed -i -e 's/apply_updates = no/apply_updates = yes/g' /etc/yum/yum-cron.conf
- - systemctl start yum-cron
  - systemctl enable yum-cron
+ - sed -i -e 's/apply_updates = no/apply_updates = yes/g' /etc/yum/yum-cron.conf
+ - sed -i -e 's/update_cmd = default/update_cmd = security/g' /etc/yum/yum-cron-hourly.conf
+ - sed -i -e 's/apply_updates = no/apply_updates = yes/g' /etc/yum/yum-cron-hourly.conf
+ - sed -i -e 's/update_messages = no/update_messages = yes/g' /etc/yum/yum-cron-hourly.conf
+ - sed -i -e 's/download_updates = no/download_updates = yes/g' /etc/yum/yum-cron-hourly.conf
+ - sed -i -e 's/apply_updates = no/apply_updates = yes/g' /etc/yum/yum-cron-hourly.conf
+ - systemctl start yum-cron
  - sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose
  - sudo chmod +x /usr/bin/docker-compose
  - chkconfig docker on
