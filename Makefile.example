@@ -1,0 +1,9 @@
+tfcmd = terraform 
+instances = srv01 srv02
+
+.PHONY: $(instances)
+$(instances):
+	$(tfcmd) init
+	$(tfcmd) workspace select $@
+	$(tfcmd) apply -var-file=$@.safe.tfvars
+

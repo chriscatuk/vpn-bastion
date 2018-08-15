@@ -23,3 +23,36 @@ terraform.tfvars
 
 # Ansible local
 *.retry
+
+# OS Files
+# OS X
+*.DS_Store
+.DS_Store
+.DS_Store*
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux stuff you don't want
+.Trash*
+.thumbnails
+
+# Dropbox
+.dropbox
+.dropbox.attr
+.dropbox.cache
+
+# MySQL DB credentials shouldn't be in the repo
+platform-db
+
+# For Sebastian
+./komodoproject
