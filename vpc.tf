@@ -84,24 +84,24 @@ resource "aws_subnet" "b" {
   }
 }
 
-resource "aws_subnet" "c" {
-    availability_zone = "${data.aws_availability_zones.available.names[2]}"
-    vpc_id = "${aws_vpc.vpc.id}"
-    cidr_block = "${cidrsubnet(aws_vpc.vpc.cidr_block, 2, 2)}"
-    map_public_ip_on_launch = true
+# resource "aws_subnet" "c" {
+#     availability_zone = "${data.aws_availability_zones.available.names[2]}"
+#     vpc_id = "${aws_vpc.vpc.id}"
+#     cidr_block = "${cidrsubnet(aws_vpc.vpc.cidr_block, 2, 2)}"
+#     map_public_ip_on_launch = true
 
-    ipv6_cidr_block = "${var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 12) : ""}"
-    assign_ipv6_address_on_creation = true
+#     ipv6_cidr_block = "${var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 12) : ""}"
+#     assign_ipv6_address_on_creation = true
 
-  tags {
-    Name = "${var.vpcname}-c"
-    environment = "${var.environment}"
-    deployment = "${var.deployment}"
-    OWNER = "${var.OWNER}"
-    ROLE = "${var.ROLE}"
-    AlwaysOn = "${var.AlwaysOn}"
-  }
-}
+#   tags {
+#     Name = "${var.vpcname}-c"
+#     environment = "${var.environment}"
+#     deployment = "${var.deployment}"
+#     OWNER = "${var.OWNER}"
+#     ROLE = "${var.ROLE}"
+#     AlwaysOn = "${var.AlwaysOn}"
+#   }
+# }
 
 ########################
 #  Route Table Update  #
@@ -139,10 +139,10 @@ resource "aws_route_table_association" "route_sb_b" {
     route_table_id = "${aws_default_route_table.route.id}"
 }
 
-resource "aws_route_table_association" "route_sb_c" {
-    subnet_id      = "${aws_subnet.c.id}"
-    route_table_id = "${aws_default_route_table.route.id}"
-}
+# resource "aws_route_table_association" "route_sb_c" {
+#     subnet_id      = "${aws_subnet.c.id}"
+#     route_table_id = "${aws_default_route_table.route.id}"
+# }
 
 ###################################
 #    SECURITY GROUP CREATION      #
