@@ -13,6 +13,7 @@
 .terraform/
 
 # Local Files
+Makefile
 *.backup
 
 # Terraform local vars
