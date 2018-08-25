@@ -5,7 +5,7 @@
 
 resource "aws_instance" "vpn_server" {
   ami           = "${data.aws_ami.ami_amzn2.id}"
-	instance_type = "t2.micro"
+	instance_type = "${var.instance_type}"
   key_name = "${aws_key_pair.key.key_name}"
   subnet_id = "${aws_subnet.a.id}"
   associate_public_ip_address = true
