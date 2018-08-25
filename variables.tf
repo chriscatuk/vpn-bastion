@@ -14,6 +14,7 @@ variable "cidr" {         default = "172.30.200.0/22" }
 #Should be FQDN, ex: vpn-test.domain.com
 variable "hostname" {}
 variable "route53_zoneID" {}
+variable "instance_type"  {default = "t3.micro"}
 
 # Enable IPv6 support, in Dual Stack mode
 # Bug Issue 688: https://github.com/terraform-providers/terraform-provider-aws/issues/688
