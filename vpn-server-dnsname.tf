@@ -20,10 +20,10 @@ resource "aws_route53_record" "servername_ipv4_internal" {
   records = ["${aws_instance.vpn_server.private_ip}"]
 }
 
-# resource "aws_route53_record" "servername_ipv6" {
-#   zone_id = "${var.route53_zoneID}"
-#   name    = "${var.hostname}."
-#   type    = "AAAA"
-#   ttl     = "300"
-#   records = ["${aws_instance.vpn_server.ipv6_addresses}"]
-# }
+resource "aws_route53_record" "servername_ipv6" {
+  zone_id = "${var.route53_zoneID}"
+  name    = "${var.hostname}."
+  type    = "AAAA"
+  ttl     = "300"
+  records = ["${aws_instance.vpn_server.ipv6_addresses}"]
+}
