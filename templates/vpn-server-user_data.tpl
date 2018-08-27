@@ -48,8 +48,8 @@ runcmd:
  - echo "      - VPN_IPSEC_PSK=${psk}" >> $${docker_dir}/docker-compose.yml
  - docker-compose -f $${docker_dir}/docker-compose.yml up -d
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
- - wget https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip -P ~/
- - unzip ~/terraform_0.11.7_linux_amd64.zip -d /usr/local/bin/
+ - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -P ~/
+ - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
  - amazon-linux-extras install ansible2
 
 power_state:

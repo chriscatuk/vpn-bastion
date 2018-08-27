@@ -51,9 +51,3 @@ terraform.tfvars
 .dropbox
 .dropbox.attr
 .dropbox.cache
-
-# MySQL DB credentials shouldn't be in the repo
-platform-db
-
-# For Sebastian
-./komodoproject
