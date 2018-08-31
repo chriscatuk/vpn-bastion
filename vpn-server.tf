@@ -22,6 +22,9 @@ resource "aws_instance" "vpn_server" {
 	}
   depends_on = ["aws_internet_gateway.gw"]
   lifecycle { create_before_destroy = true }
+  credit_specification {
+    cpu_credits = "standard"
+  }
 
   user_data = "${data.template_file.user_data.rendered}"
 }
