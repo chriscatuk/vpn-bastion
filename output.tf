@@ -22,5 +22,5 @@ output "VPN Instance link" {
 
 output "VPN Credentials" {
 #  sensitive = true
-  value = "Server: ${module.vpn-server.hostname} - PSK: ${module.vpn-server.vpn_psk} - User: ${module.vpn-server.vpn_user} / ${module.vpn-server.vpn_password} \n Internal: ${module.vpn-server.internal_hostname}"
+  value = "Server: ${module.vpn-server.hostname} - PSK: ${random_string.PSK.result} - User: vpnuser / ${random_string.password.result} \n Internal: ${module.vpn-server.internal_hostname}"
 }
