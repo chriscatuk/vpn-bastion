@@ -15,11 +15,6 @@ resource "aws_instance" "vpn_server" {
   user_data = "${data.template_file.user_data.rendered}"
 }
 
-locals {
-  default_template_path = "${path.module}/default-user_data.tpl"
-  template_path         = "${var.template_path != "" ? var.template_path : local.default_template_path}"
-}
-
 data "template_file" "user_data" {
   template = "${file("${local.template_path}")}"
   vars {
@@ -30,7 +25,6 @@ data "template_file" "user_data" {
     username = "${var.username}"
   }
 }
-
 
 ########################
 #          AMI         #
