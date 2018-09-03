@@ -9,19 +9,18 @@ output "VPC link" {
 }
 
 output "VPN Server Public IPv4" {
-#  value = "${aws_instance.vpn_server.public_ip} (${aws_instance.vpn_server.id})"
-  value = "${aws_eip.ip.public_ip} (${aws_instance.vpn_server.id})"
+  value = "${module.vpn-server.public_ip} (${module.vpn-server.id})"
 }
 
 output "VPN Server Public IPv6" {
-  value = ["${aws_instance.vpn_server.ipv6_addresses}"]
+  value = "${module.vpn-server.ipv6_address}"
 }
 
 output "VPN Instance link" {
-  value = "https://${var.region}.console.aws.amazon.com/ec2/v2/home?region=${var.region}#Instances:instanceId=${aws_instance.vpn_server.id};sort=desc:instanceId"
+  value = "${module.vpn-server.aws_console_link}"
 }
 
 output "VPN Credentials" {
 #  sensitive = true
-  value = "Server: ${var.hostname} - PSK: ${random_string.PSK.result} - User: vpnuser / ${random_string.password.result} \n Internal: ${aws_route53_record.servername_ipv4_internal.name}"
+  value = "Server: ${module.vpn-server.hostname} - PSK: ${module.vpn-server.vpn_psk} - User: ${module.vpn-server.vpn_user} / ${module.vpn-server.vpn_password} \n Internal: ${module.vpn-server.internal_hostname}"
 }
