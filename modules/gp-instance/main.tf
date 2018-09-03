@@ -17,13 +17,7 @@ resource "aws_instance" "vpn_server" {
 
 data "template_file" "user_data" {
   template = "${file("${local.template_path}")}"
-  vars {
-    hostname = "${var.hostname}"
-    password = "${random_string.password.result}"
-    psk = "${random_string.PSK.result}"
-    keypubic = "${var.keypublic}"
-    username = "${var.username}"
-  }
+  vars = "${local.template_vars}"
 }
 
 ########################
@@ -72,27 +66,17 @@ resource "aws_eip" "ip" {
 	tags = "${var.tags}"
 }
 
-########################
-#    VPN CREDENTIALS   #
-########################
-# Usage: ${random_string.password.result}
-resource "random_string" "password" {
-  length = 16
-  special = false
-}
-
-resource "random_string" "PSK" {
-  length = 16
-  special = false
-}
-
 # Define the Key Pair you will add in AWS
 # It must not exist before running the script
 
+########################
+#       Key Pair       #
+########################
 resource "aws_key_pair" "key" {
    key_name   = "${var.keyname}"
    public_key = "${var.keypublic}"
 }
+
 
 ########################
 #       DNS NAME       #

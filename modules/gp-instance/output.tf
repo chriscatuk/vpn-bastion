@@ -23,15 +23,3 @@ output "hostname" {
 output "internal_hostname" {
   value = "internal-${var.hostname}"
 }
-output "vpn_user" {
-  sensitive = true
-  value = "vpnuser"
-}
-output "vpn_psk" {
-  sensitive = true
-  value = "${random_string.PSK.result}"
-}
-output "vpn_password" {
-  sensitive = true
-  value = "${random_string.password.result}"
-}
