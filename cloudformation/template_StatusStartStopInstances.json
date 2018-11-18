@@ -3,17 +3,6 @@
 
   "Description" : "AWS CloudFormation Template creating Policy, Role and user for remotely stop or starting instances and checking status.",
 
-  "Parameters" : {
-    "Password": {
-      "NoEcho": "true",
-      "Type": "String",
-      "Description" : "New account password",
-      "MinLength": "1",
-      "MaxLength": "41",
-      "ConstraintDescription" : "the password must be between 1 and 41 characters"
-    }
-  },
-
   "Resources" : {
     "CFNUser" : {
       "Type": "AWS::IAM::User",
