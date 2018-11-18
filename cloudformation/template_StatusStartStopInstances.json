@@ -1,0 +1,97 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "AWS CloudFormation Template creating Policy, Role and user for remotely stop or starting instances and checking status.",
+
+  "Parameters" : {
+    "Password": {
+      "NoEcho": "true",
+      "Type": "String",
+      "Description" : "New account password",
+      "MinLength": "1",
+      "MaxLength": "41",
+      "ConstraintDescription" : "the password must be between 1 and 41 characters"
+    }
+  },
+
+  "Resources" : {
+    "CFNUser" : {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "UserName": "CloudControliOS"
+      }
+    },
+
+    "CFNUserPolicies" : {
+      "Type" : "AWS::IAM::Policy",
+      "Properties" : {
+        "PolicyName" : "StatusStopStartInstances",
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Sid": "VisualEditor0",
+                  "Effect": "Allow",
+                  "Action": [
+                      "ec2:StartInstances",
+                      "execute-api:Invoke",
+                      "ec2:StopInstances"
+                  ],
+                  "Resource": [
+                      "arn:aws:execute-api:*:*:*",
+                      "arn:aws:ec2:*:*:instance/*"
+                  ]
+              },
+              {
+                  "Sid": "VisualEditor1",
+                  "Effect": "Allow",
+                  "Action": [
+                      "ec2:DescribeInstances",
+                      "ec2:DescribeRegions",
+                      "ec2:DescribeInstanceStatus"
+                  ],
+                  "Resource": "*"
+              }
+          ]
+      },
+        "Users" : [{ "Ref" : "CFNUser" }],
+        "Roles" : [{ "Ref" : "CFNRole" }]
+      }
+    },
+
+    "CFNRole" : {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "StatusStopStartInstances",
+        "AssumeRolePolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [ {
+               "Effect": "Allow",
+               "Principal": {
+                  "Service": [ "ec2.amazonaws.com" ]
+               },
+               "Action": [ "sts:AssumeRole" ]
+            } ]
+         }
+      }
+  },
+
+  "CFNKeys" : {
+      "Type" : "AWS::IAM::AccessKey",
+      "Properties" : {
+        "UserName" : { "Ref": "CFNUser" }
+      }
+    }
+  },
+
+  "Outputs" : {
+    "AccessKey" : {
+      "Value" : { "Ref" : "CFNKeys" },
+      "Description" : "AWSAccessKeyId of new user"
+    },
+    "SecretKey" : {
+      "Value" : { "Fn::GetAtt" : ["CFNKeys", "SecretAccessKey"]},
+      "Description" : "AWSSecretKey of new user"
+    }
+  }
+}
