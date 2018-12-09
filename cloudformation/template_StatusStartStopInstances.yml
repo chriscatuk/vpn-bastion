@@ -1,0 +1,288 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation Template creating Policy, Role and user for remotely stop
+  or starting instances and checking status.
+Resources:
+  CFNUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: CloudControliOS
+  CFNUserPolicies:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: StatusStopStartInstances
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: VisualEditor0
+            Effect: Allow
+            Action:
+              - 'ec2:StartInstances'
+              - 'execute-api:Invoke'
+              - 'ec2:StopInstances'
+            Resource:
+              - 'arn:aws:execute-api:*:*:*'
+              - 'arn:aws:ec2:*:*:instance/*'
+          - Sid: VisualEditor1
+            Effect: Allow
+            Action:
+              - 'ec2:DescribeInstances'
+              - 'ec2:DescribeRegions'
+              - 'ec2:DescribeInstanceStatus'
+            Resource: '*'
+      Users:
+        - !Ref CFNUser
+      Roles:
+        - !Ref CFNRole
+
+  CFNRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: StatusStopStartInstances
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  CFNKeys:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName: !Ref CFNUser
+
+  VPNGetInstance:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.lambda_handler
+      Role : !GetAtt CFNRole.Arn
+      Runtime: python3.6
+      Timeout: 60
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          import botocore
+          import json
+          import sys
+          from datetime import date, datetime
+
+          print('Loading VPNGetInstance Function');
+
+          def json_serial(obj):
+              """JSON serializer for objects not serializable by default json code"""
+
+              if isinstance(obj, (datetime, date)):
+                  return obj.isoformat()
+              raise TypeError ("Type %s not serializable" % type(obj))
+
+
+          def format_response(statusCode,responseBody):
+              """Format response correctly in JSON for API Gateway."""
+
+              # if response is simply a string, change it to JSON error message
+              if isinstance(responseBody, str):
+                  responseBody = {"message": responseBody}
+
+              response = {
+                  "statusCode": statusCode,
+                  "body": json.dumps(responseBody),
+                  "isBase64Encoded": False
+              }
+
+              return response
+              
+          def lambda_handler(event, context):
+
+              instances =  [event["queryStringParameters"]['id']]
+              region = event["queryStringParameters"]['region']
+              
+              ec2 = boto3.client('ec2', region_name=region)
+
+              try:
+                  response = ec2.describe_instances(
+                      InstanceIds=instances    )
+              except botocore.exceptions.ClientError as e:
+                  print("===========MyERROR============")
+                  print(e)
+                  print(e.response)
+                  print("==============================")
+                  error_code = e.response['Error']['Code']
+                  error_msg = e.response['Error']['Message']
+                  if error_code == 'InvalidInstanceID.NotFound':
+                      responseBody = {"Message" : error_msg}
+                      return format_response(404,responseBody)
+                  else:
+                      responseBody = {"Message" : error_msg}
+                      return format_response(500,responseBody)
+              except botocore.exceptions.EndpointConnectionError as e:
+                      return format_response(504,"AWS Region unreachable: " + region)
+              except:
+                  print("Unexpected error:", sys.exc_info()[0])
+                  responseBody = {"Message" : "Unexpected Error in Lambda, see Cloudwatch"}
+                  return format_response(500,responseBody)
+                  raise
+
+              # Use homemade function for replacing datetime in json
+              formatedResponse = json.loads(json.dumps(response, default=json_serial))
+                  
+              # Found instance or not?
+              print("======== MyResponse =========")
+              print(formatedResponse)
+              print("=============================")
+
+              try: formatedResponse["Reservations"][0]["Instances"][0]["State"]["Code"]
+              except: return format_response(500,"Status Code not Found")
+              
+              try: formatedResponse["Reservations"][0]["Instances"][0]["State"]["Name"]
+              except: return format_response(500,"Status Name not Found")
+              
+              try: formatedResponse["Reservations"][0]["Instances"][0]["LaunchTime"]
+              except: return format_response(500,"LaunchTime not Found")
+              
+              # State description of the instance
+              statusInstance = formatedResponse["Reservations"][0]["Instances"][0]
+              statusCode = statusInstance["State"]["Code"]
+              statusName = statusInstance["State"]["Name"]
+              launchTime = statusInstance["LaunchTime"]
+              
+              responseBody = {
+                  "Name" : statusName,
+                  "Code" : statusCode,
+                  "launchTime" : launchTime
+              }
+
+              return format_response(200,formatedResponse)
+
+  VPNGetInstances:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.lambda_handler
+      Role : !GetAtt CFNRole.Arn
+      Runtime: python3.6
+      Timeout: 60
+      Code:
+        ZipFile: !Sub |
+          import boto3
+          import botocore
+          import json
+          import sys
+          from datetime import date, datetime
+          instanceslist = {}
+
+          def json_serial(obj):
+              """JSON serializer for objects not serializable by default json code"""
+
+              if isinstance(obj, (datetime, date)):
+                  return obj.isoformat()
+              raise TypeError ("Type %s not serializable" % type(obj))
+
+
+          def format_response(statusCode,responseBody):
+              """Format response correctly in JSON for API Gateway."""
+
+              # if response is simply a string, change it to JSON error message
+              if isinstance(responseBody, str):
+                  responseBody = {"message": responseBody}
+
+              response = {
+                  "statusCode": statusCode,
+                  "body": json.dumps(responseBody),
+                  "isBase64Encoded": False
+              }
+
+              return response
+
+          def cjg_describe_instances(region):
+              
+              ec2 = boto3.client('ec2', region_name=region)
+
+              # Find all Instances with this tag in this region
+              response = ec2.describe_instances()
+
+              # Save all found instances from this region
+              for reservation in (response["Reservations"]):
+                  for instance in reservation["Instances"]:
+                      instanceslist[len(instanceslist)] = instance
+
+
+          def lambda_handler(event, context):
+
+              # List all AWS regions
+              client = boto3.client('ec2')
+              AWSregions = [region['RegionName'] for region in client.describe_regions()['Regions']]
+
+              # If regions (comma-separated string) is not a parameters
+              try: regions = event["queryStringParameters"]['regions'].split(",")
+              except:
+                  regions = list()
+              
+              # If no region, takes all AWS Regions
+              if(len(regions) == 0):
+                  regions = AWSregions
+              else: # Check if regions exist
+                  for region in regions:
+                      if( region not in AWSregions):
+                          return format_response(400,"This region doesn't exist in AWS: " + region)
+
+              print("===========REGIONS============")
+              print(regions)
+              print("==============================")
+              
+              instanceslist = {}
+              
+              try:
+                  # Connect in each region
+                  for region in regions:
+                      ec2 = boto3.client('ec2', region_name=region)
+
+                      # Find all Instances with this tag in this region
+                      response = ec2.describe_instances()
+
+                      # Save all found instances from this region
+                      for reservation in (response["Reservations"]):
+                          for instance in reservation["Instances"]:
+                              instanceslist[len(instanceslist)] = instance
+
+              except botocore.exceptions.ClientError as e:
+                  print("===========MyERROR============")
+                  print(e)
+                  print(e.response)
+                  print("==============================")
+                  error_code = e.response['Error']['Code']
+                  error_msg = e.response['Error']['Message']
+                  if error_code == 'InvalidInstanceID.NotFound':
+                      responseBody = {"Message" : error_msg}
+                      return format_response(404,responseBody)
+                  else:
+                      responseBody = {"Message" : error_msg}
+                      return format_response(500,responseBody)
+              except botocore.exceptions.EndpointConnectionError as e:
+                      return format_response(504,"AWS Region unreachable: " + region)
+              except:
+                  print("Unexpected error:", sys.exc_info()[0])
+                  responseBody = {"Message" : "Unexpected Error in Lambda, see Cloudwatch"}
+                  return format_response(500,responseBody)
+                  raise
+
+              formatedResponse = json.loads(json.dumps(instanceslist, default=json_serial))
+              print("======== MyResponse =========")
+              print(formatedResponse)
+              print("=============================")
+
+              return format_response(200,formatedResponse)
+
+Outputs:
+  AccessKey:
+    Value: !Ref CFNKeys
+    Description: AWSAccessKeyId of new user
+  SecretKey:
+    Value: !GetAtt 
+      - CFNKeys
+      - SecretAccessKey
+    Description: AWSSecretKey of new user

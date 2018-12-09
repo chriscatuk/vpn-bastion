@@ -83,4 +83,24 @@
       "Description" : "AWSSecretKey of new user"
     }
   }
+
+  "VPNGetInstances": {
+    "Type": "AWS::Lambda::Function",
+    "Properties": {
+      "Handler": "index.handler",
+      "Role": { "Fn::GetAtt" : ["CFNRole", "Arn"] },
+      "Code": {
+        "ZipFile":  { "Fn::Join": ["", [
+          "var response = require('cfn-response');",
+          "exports.handler = function(event, context) {",
+          "   var responseData = {Value: event.ResourceProperties.List};",
+          "   responseData.Value.push(event.ResourceProperties.AppendedItem);",
+          "   response.send(event, context, response.SUCCESS, responseData);",
+          "};"
+        ]]}
+      },
+      "Runtime": "python3.6",
+      "Timeout": 60
+    }
+  }
 }
