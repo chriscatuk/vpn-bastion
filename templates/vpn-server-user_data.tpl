@@ -17,6 +17,7 @@ packages:
  - mailx
  - git
  - python3
+ - jq
  - docker
  - curl
  - stress
