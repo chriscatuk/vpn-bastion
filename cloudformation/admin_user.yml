@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create an admin user with all rights as long as they used MFA.
+Is it still necessary to go to IAM console and define password, access key and MFA device
+Parameters:
+  Username:
+    Type: String
+    Description: Enter the username that will be admin with MFA enforced
+Resources:
+  CFNAdminsGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/AdministratorAccess'
+      - 'arn:aws:iam::aws:policy/job-function/Billing'
+  CFNUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref 'Username'
+  addUserToGroup:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref 'CFNAdminsGroup'
+      Users:
+      - !Ref CFNUser
+  CFNforceMFA:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: forceMFA
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Deny
+            Action: '*'
+            Resource: '*'
+            Condition:
+              BoolIfExists:
+                aws:MultiFactorAuthPresent: 'false'
+      Groups:
+        - !Ref 'CFNAdminsGroup'
