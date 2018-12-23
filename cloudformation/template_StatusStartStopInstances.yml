@@ -14,8 +14,7 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Sid: VisualEditor0
-            Effect: Allow
+          - Effect: Allow
             Action:
               - 'ec2:StartInstances'
               - 'execute-api:Invoke'
@@ -23,8 +22,7 @@ Resources:
             Resource:
               - 'arn:aws:execute-api:*:*:*'
               - 'arn:aws:ec2:*:*:instance/*'
-          - Sid: VisualEditor1
-            Effect: Allow
+          - Effect: Allow
             Action:
               - 'ec2:DescribeInstances'
               - 'ec2:DescribeRegions'
