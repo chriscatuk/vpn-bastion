@@ -37,7 +37,7 @@ runcmd:
  - sed -i -e 's/download_updates = no/download_updates = yes/g' /etc/yum/yum-cron-hourly.conf
  - sed -i -e 's/apply_updates = no/apply_updates = yes/g' /etc/yum/yum-cron-hourly.conf
  - systemctl start yum-cron
- - amazon-linux-extras install docker -y
+ - amazon-linux-extras install docker ansible2 -y
  - sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose
  - sudo chmod +x /usr/bin/docker-compose
  - chkconfig docker on
@@ -51,7 +51,6 @@ runcmd:
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
  - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -P ~/
  - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
- - amazon-linux-extras install ansible2
 
 power_state:
    delay: "now"
