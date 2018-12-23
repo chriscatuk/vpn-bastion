@@ -18,7 +18,6 @@ packages:
  - git
  - python3
  - jq
- - docker
  - curl
  - stress
  - yum-cron
@@ -38,6 +37,7 @@ runcmd:
  - sed -i -e 's/download_updates = no/download_updates = yes/g' /etc/yum/yum-cron-hourly.conf
  - sed -i -e 's/apply_updates = no/apply_updates = yes/g' /etc/yum/yum-cron-hourly.conf
  - systemctl start yum-cron
+ - amazon-linux-extras install docker -y
  - sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose
  - sudo chmod +x /usr/bin/docker-compose
  - chkconfig docker on
@@ -52,7 +52,6 @@ runcmd:
  - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -P ~/
  - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
  - amazon-linux-extras install ansible2
- - pip3 install aws-google-auth
 
 power_state:
    delay: "now"
