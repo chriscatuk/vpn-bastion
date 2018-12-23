@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Create an admin user with all rights as long as they used MFA.
-Is it still necessary to go to IAM console and define password, access key and MFA device
+Description:  >-
+  Create an admin user with all rights access as long as they used MFA.
+  Is it still necessary to go to IAM console and define a password and MFA device
 Parameters:
   Username:
     Type: String
@@ -16,10 +17,14 @@ Resources:
     Type: AWS::IAM::User
     Properties:
       UserName: !Ref 'Username'
+  CFNKeys:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref CFNUser
   addUserToGroup:
     Type: AWS::IAM::UserToGroupAddition
     Properties:
-      GroupName: !Ref 'CFNAdminsGroup'
+      GroupName: !Ref CFNAdminsGroup
       Users:
       - !Ref CFNUser
   CFNforceMFA:
@@ -36,4 +41,20 @@ Resources:
               BoolIfExists:
                 aws:MultiFactorAuthPresent: 'false'
       Groups:
-        - !Ref 'CFNAdminsGroup'
+        - !Ref CFNAdminsGroup
+
+Outputs:
+  UserName:
+    Value: !Ref 'Username'
+    Description: Username
+  AccessKey:
+    Value: !Ref CFNKeys
+    Description: AWSAccessKeyId of new user
+  SecretKey:
+    Value: !GetAtt 
+      - CFNKeys
+      - SecretAccessKey
+    Description: AWSSecretKey of new user
+  MFA:
+    Value: 'You must enable MFA yourself for this user'
+    Description: Information
