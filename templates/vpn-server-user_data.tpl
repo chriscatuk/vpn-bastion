@@ -51,6 +51,7 @@ runcmd:
  - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -P ~/
  - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
  - amazon-linux-extras install ansible2
+ - pip3 install aws-google-auth
 
 power_state:
    delay: "now"
