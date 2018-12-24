@@ -14,4 +14,5 @@ efs:
     efs_path=/mnt/efs ;\
     efs_src=fs-12345678 ;\
     ansible all -i $$efs_host, --become -m mount -a "path=$$efs_path src=$$efs_src:/ fstype=efs opts=defaults,_netdev state=mounted" ;\
+	ansible all -i $$efs_host, --become -m replace -a "path=/etc/passwd regexp=':/home/username:' replace=':/mnt/efs/home/username:'" ;\
 
