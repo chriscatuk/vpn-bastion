@@ -280,7 +280,5 @@ Outputs:
     Value: !Ref CFNKeys
     Description: AWSAccessKeyId of new user
   SecretKey:
-    Value: !GetAtt 
-      - CFNKeys
-      - SecretAccessKey
+    Value: !GetAtt CFNKeys.SecretAccessKey
     Description: AWSSecretKey of new user
