@@ -52,9 +52,7 @@ Outputs:
     Value: !Ref CFNKeys
     Description: AWSAccessKeyId of new user
   SecretKey:
-    Value: !GetAtt 
-      - CFNKeys
-      - SecretAccessKey
+    Value: !GetAtt CFNKeys.SecretAccessKey
     Description: AWSSecretKey of new user
   MFA:
     Value: 'You must enable MFA yourself for this user'
