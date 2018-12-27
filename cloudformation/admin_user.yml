@@ -1,7 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description:  >-
   Create an admin user with all rights access as long as they used MFA.
-  Is it still necessary to go to IAM console and define a password and MFA device
+  It is still necessary to go to IAM console and define an MFA device.
+  No access to AWS Console is created.
 Parameters:
   Username:
     Type: String
