@@ -275,6 +275,96 @@ Resources:
 
               return format_response(200,formatedResponse)
 
+  Deployment: 
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: MockMethod
+    Properties: 
+        RestApiId: 
+          Ref: "MyRestApi"
+        Description: "My deployment"
+
+  StageProd:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: Prod
+      Description: Prod Stage
+      RestApiId: !Ref MyRestApi
+      DeploymentId: !Ref Deployment
+      Variables:
+        Stack: Prod
+      MethodSettings:
+        - ResourcePath: /
+          HttpMethod: GET
+          MetricsEnabled: true
+          DataTraceEnabled: true
+        - ResourcePath: /stack
+          HttpMethod: POST
+          MetricsEnabled: true
+          DataTraceEnabled: true
+          ThrottlingBurstLimit: 999
+        - ResourcePath: /stack
+          HttpMethod: GET
+          MetricsEnabled: true
+          DataTraceEnabled: true
+          ThrottlingBurstLimit: 555
+
+  ApiKey: 
+    Type: AWS::ApiGateway::ApiKey
+    Properties: 
+        Name: "vpn"
+        Description: "CloudFormation API Key V1"
+        Enabled: true
+        GenerateDistinctId: false
+  ApiUsagePlan:
+    Type: "AWS::ApiGateway::UsagePlan"
+    Properties:
+        ApiStages: 
+        - ApiId: !Ref MyRestApi
+          Stage: !Ref StageProd
+        Description: "vpn usage plan"
+        Quota:
+            Limit: 2000
+            Period: MONTH
+        Throttle:
+            BurstLimit: 10
+            RateLimit: 10
+        UsagePlanName: "vpn-usage-plan"
+  ApiUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+        KeyId: !Ref ApiKey
+        KeyType: API_KEY
+        UsagePlanId: !Ref ApiUsagePlan
+
+  MyRestApi: 
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+        Name : VPN
+        Body :
+            swagger : 2.0
+            info :
+                version : 0.0.1
+                title : VPN
+            basePath : /prod
+            ApiKeySourceType: HEADER
+            schemes :
+                - https
+            definitions:
+                Empty :
+                    type : object
+        Parameters:
+            endpointConfigurationTypes: REGIONAL
+
+  MockMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId: !GetAtt MyRestApi.RootResourceId
+      RestApiId: !Ref MyRestApi
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+
 Outputs:
   AccessKey:
     Value: !Ref CFNKeys
