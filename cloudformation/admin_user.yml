@@ -13,7 +13,6 @@ Resources:
     Properties:
       ManagedPolicyArns:
       - 'arn:aws:iam::aws:policy/AdministratorAccess'
-      - 'arn:aws:iam::aws:policy/job-function/Billing'
   CFNUser:
     Type: AWS::IAM::User
     Properties:

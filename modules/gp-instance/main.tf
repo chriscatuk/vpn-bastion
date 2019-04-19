@@ -37,7 +37,7 @@ data "aws_ami" "ami_amzn2" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = ["amzn2-ami-hvm-*-x86_64-gp2-dotnetcore-2018.12.12"]
   }
 }
 
