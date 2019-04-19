@@ -29,11 +29,7 @@ data "template_file" "user_data" {
 
 data "aws_ami" "ami_amzn2" {
   most_recent      = true
-
-  filter {
-    name   = "owner-alias"
-    values = ["amazon"]
-  }
+  owners           = ["amazon"]
 
   filter {
     name   = "name"
