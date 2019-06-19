@@ -16,7 +16,6 @@ packages:
  - mtr
  - mailx
  - git
- - python3
  - jq
  - curl
  - stress
@@ -60,7 +59,7 @@ runcmd:
  - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -qP ~/
  - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
 # aws cli auth by Google
- - pip3 install aws-google-auth sceptre virtualenv troposphere
+ - pip3 install aws-google-auth
 
 power_state:
    delay: "now"
