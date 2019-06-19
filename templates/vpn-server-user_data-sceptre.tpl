@@ -21,6 +21,7 @@ packages:
  - curl
  - stress
  - yum-cron
+ - python2-pip
 
 runcmd:
 # Clone VPN-Bastion repo 1/2: Settings
