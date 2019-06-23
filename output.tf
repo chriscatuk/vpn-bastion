@@ -13,14 +13,15 @@ output "VPN-Server-Public-IPv4" {
 }
 
 output "VPN-Server-Public-IPv6" {
-  value = "${module.vpn-server.ipv6_address}"
+  value = module.vpn-server.ipv6_address
 }
 
 output "VPN-Instance-link" {
-  value = "${module.vpn-server.aws_console_link}"
+  value = module.vpn-server.aws_console_link
 }
 
 output "VPN-Credentials" {
-#  sensitive = true
+  #  sensitive = true
   value = "Server: ${module.vpn-server.hostname} - PSK: ${random_string.PSK.result} - User: vpnuser / ${random_string.password.result} \n Internal: ${module.vpn-server.internal_hostname}"
 }
+
