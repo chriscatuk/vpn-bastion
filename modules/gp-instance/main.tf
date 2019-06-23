@@ -101,5 +101,5 @@ resource "aws_route53_record" "servername_ipv6" {
   name    = "${var.hostname}."
   type    = "AAAA"
   ttl     = "300"
-  records = ["${aws_instance.vpn_server.ipv6_addresses}"]
+  records = "${aws_instance.vpn_server.ipv6_addresses}"
 }

@@ -1,26 +1,26 @@
 # Final Output summarising VPN Credentials, IP Addresses and DNS Names
 
-output "VPC Id" {
+output "VPC-Id" {
   value = "${aws_vpc.vpc.id} : ${var.vpcname} (${var.region})"
 }
 
-output "VPC link" {
+output "VPC-link" {
   value = "https://${var.region}.console.aws.amazon.com/vpc/home?region=${var.region}#vpcs:filter=${aws_vpc.vpc.id}"
 }
 
-output "VPN Server Public IPv4" {
+output "VPN-Server-Public-IPv4" {
   value = "${module.vpn-server.public_ip} (${module.vpn-server.id})"
 }
 
-output "VPN Server Public IPv6" {
+output "VPN-Server-Public-IPv6" {
   value = "${module.vpn-server.ipv6_address}"
 }
 
-output "VPN Instance link" {
+output "VPN-Instance-link" {
   value = "${module.vpn-server.aws_console_link}"
 }
 
-output "VPN Credentials" {
+output "VPN-Credentials" {
 #  sensitive = true
   value = "Server: ${module.vpn-server.hostname} - PSK: ${random_string.PSK.result} - User: vpnuser / ${random_string.password.result} \n Internal: ${module.vpn-server.internal_hostname}"
 }
