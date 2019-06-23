@@ -7,18 +7,18 @@
 #    VPC CREATION      #
 ########################
 resource "aws_vpc" "vpc" {
-  cidr_block       = "${var.cidr}"
-  enable_dns_support = true
-  enable_dns_hostnames = true
-  assign_generated_ipv6_cidr_block = "${var.ipv6}"
+  cidr_block                       = var.cidr
+  enable_dns_support               = true
+  enable_dns_hostnames             = true
+  assign_generated_ipv6_cidr_block = var.ipv6
 
   tags = {
-    Name = "${var.vpcname}"
-    environment = "${var.environment}"
-    deployment = "${var.deployment}"
-    OWNER = "${var.OWNER}"
-    ROLE = "${var.ROLE}"
-    AlwaysOn = "${var.AlwaysOn}"
+    Name        = var.vpcname
+    environment = var.environment
+    deployment  = var.deployment
+    OWNER       = var.OWNER
+    ROLE        = var.ROLE
+    AlwaysOn    = var.AlwaysOn
   }
 }
 
@@ -26,61 +26,62 @@ resource "aws_vpc" "vpc" {
 #    IGW CREATION      #
 ########################
 resource "aws_internet_gateway" "gw" {
-  vpc_id = "${aws_vpc.vpc.id}"
+  vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.vpcname}"
-    environment = "${var.environment}"
-    deployment = "${var.deployment}"
-    OWNER = "${var.OWNER}"
-    ROLE = "${var.ROLE}"
-    AlwaysOn = "${var.AlwaysOn}"
+    Name        = var.vpcname
+    environment = var.environment
+    deployment  = var.deployment
+    OWNER       = var.OWNER
+    ROLE        = var.ROLE
+    AlwaysOn    = var.AlwaysOn
   }
 }
 
 ########################
 #   Subnets Creation   #
 ########################
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {
+}
 
 resource "aws_subnet" "a" {
-    availability_zone = "${data.aws_availability_zones.available.names[0]}"
-    vpc_id = "${aws_vpc.vpc.id}"
-    cidr_block = "${cidrsubnet(aws_vpc.vpc.cidr_block, 2, 0)}"
-    map_public_ip_on_launch = true
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 2, 0)
+  map_public_ip_on_launch = true
 
-    # Bug Issue 688: https://github.com/terraform-providers/terraform-provider-aws/issues/688
-    # Soon set even if no IPv6 for VPC
-    # https://github.com/terraform-providers/terraform-provider-aws/pull/2103
-    ipv6_cidr_block = "${var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 10) : ""}"
-    assign_ipv6_address_on_creation = true
+  # Bug Issue 688: https://github.com/terraform-providers/terraform-provider-aws/issues/688
+  # Soon set even if no IPv6 for VPC
+  # https://github.com/terraform-providers/terraform-provider-aws/pull/2103
+  ipv6_cidr_block                 = var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 10) : ""
+  assign_ipv6_address_on_creation = true
 
   tags = {
-    Name = "${var.vpcname}-a"
-    environment = "${var.environment}"
-    deployment = "${var.deployment}"
-    OWNER = "${var.OWNER}"
-    ROLE = "${var.ROLE}"
-    AlwaysOn = "${var.AlwaysOn}"
+    Name        = "${var.vpcname}-a"
+    environment = var.environment
+    deployment  = var.deployment
+    OWNER       = var.OWNER
+    ROLE        = var.ROLE
+    AlwaysOn    = var.AlwaysOn
   }
 }
 
 resource "aws_subnet" "b" {
-    availability_zone = "${data.aws_availability_zones.available.names[1]}"
-    vpc_id = "${aws_vpc.vpc.id}"
-    cidr_block = "${cidrsubnet(aws_vpc.vpc.cidr_block, 2, 1)}"
-    map_public_ip_on_launch = true
+  availability_zone       = data.aws_availability_zones.available.names[1]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 2, 1)
+  map_public_ip_on_launch = true
 
-    ipv6_cidr_block = "${var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 11) : ""}"
-    assign_ipv6_address_on_creation = true
+  ipv6_cidr_block                 = var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 11) : ""
+  assign_ipv6_address_on_creation = true
 
   tags = {
-    Name = "${var.vpcname}-b"
-    environment = "${var.environment}"
-    deployment = "${var.deployment}"
-    OWNER = "${var.OWNER}"
-    ROLE = "${var.ROLE}"
-    AlwaysOn = "${var.AlwaysOn}"
+    Name        = "${var.vpcname}-b"
+    environment = var.environment
+    deployment  = var.deployment
+    OWNER       = var.OWNER
+    ROLE        = var.ROLE
+    AlwaysOn    = var.AlwaysOn
   }
 }
 
@@ -107,36 +108,36 @@ resource "aws_subnet" "b" {
 #  Route Table Update  #
 ########################
 resource "aws_default_route_table" "route" {
-  default_route_table_id = "${aws_vpc.vpc.default_route_table_id}"
+  default_route_table_id = aws_vpc.vpc.default_route_table_id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.gw.id}"
+    gateway_id = aws_internet_gateway.gw.id
   }
 
   route {
     ipv6_cidr_block = "::/0"
-    gateway_id = "${aws_internet_gateway.gw.id}"
+    gateway_id      = aws_internet_gateway.gw.id
   }
 
   tags = {
-    Name = "${var.vpcname}"
-    environment = "${var.environment}"
-    deployment = "${var.deployment}"
-    OWNER = "${var.OWNER}"
-    ROLE = "${var.ROLE}"
-    AlwaysOn = "${var.AlwaysOn}"
+    Name        = var.vpcname
+    environment = var.environment
+    deployment  = var.deployment
+    OWNER       = var.OWNER
+    ROLE        = var.ROLE
+    AlwaysOn    = var.AlwaysOn
   }
 }
 
 resource "aws_route_table_association" "route_sb_a" {
-    subnet_id      = "${aws_subnet.a.id}"
-    route_table_id = "${aws_default_route_table.route.id}"
+  subnet_id      = aws_subnet.a.id
+  route_table_id = aws_default_route_table.route.id
 }
 
 resource "aws_route_table_association" "route_sb_b" {
-    subnet_id      = "${aws_subnet.b.id}"
-    route_table_id = "${aws_default_route_table.route.id}"
+  subnet_id      = aws_subnet.b.id
+  route_table_id = aws_default_route_table.route.id
 }
 
 # resource "aws_route_table_association" "route_sb_c" {
@@ -148,54 +149,54 @@ resource "aws_route_table_association" "route_sb_b" {
 #    SECURITY GROUP CREATION      #
 ###################################
 resource "aws_default_security_group" "sg" {
-    vpc_id = "${aws_vpc.vpc.id}"
-    ingress {
-        from_port = 22
-        to_port = 22
-        protocol = "tcp"
-        cidr_blocks = "${var.fw_ssh_cidr_ipv4}"
-        ipv6_cidr_blocks = "${var.fw_ssh_cidr_ipv6}"
-    }
+  vpc_id = aws_vpc.vpc.id
+  ingress {
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = var.fw_ssh_cidr_ipv4
+    ipv6_cidr_blocks = var.fw_ssh_cidr_ipv6
+  }
 
-    # ingress {
-    #     from_port = 0
-    #     to_port = 0
-    #     protocol = "-1"
-    #     cidr_blocks = "${var.fw_all_cidr_ipv4}"
-    #     ipv6_cidr_blocks = "${var.fw_all_cidr_ipv6}"
-    # }
+  # ingress {
+  #     from_port = 0
+  #     to_port = 0
+  #     protocol = "-1"
+  #     cidr_blocks = "${var.fw_all_cidr_ipv4}"
+  #     ipv6_cidr_blocks = "${var.fw_all_cidr_ipv6}"
+  # }
 
-    ingress {
-        from_port = 500
-        to_port = 500
-        protocol = "udp"
-        cidr_blocks = "${var.fw_all_cidr_ipv4}"
-        ipv6_cidr_blocks = "${var.fw_all_cidr_ipv6}"
-    }
+  ingress {
+    from_port        = 500
+    to_port          = 500
+    protocol         = "udp"
+    cidr_blocks      = var.fw_all_cidr_ipv4
+    ipv6_cidr_blocks = var.fw_all_cidr_ipv6
+  }
 
-    ingress {
-        from_port = 4500
-        to_port = 4500
-        protocol = "udp"
-        cidr_blocks = "${var.fw_all_cidr_ipv4}"
-        ipv6_cidr_blocks = "${var.fw_all_cidr_ipv6}"
-    }
+  ingress {
+    from_port        = 4500
+    to_port          = 4500
+    protocol         = "udp"
+    cidr_blocks      = var.fw_all_cidr_ipv4
+    ipv6_cidr_blocks = var.fw_all_cidr_ipv6
+  }
 
-    egress {
-      from_port = 0
-      to_port = 0
-      protocol = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = ["::/0"]
-    }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 
   tags = {
-    Name = "${var.vpcname}"
-    environment = "${var.environment}"
-    deployment = "${var.deployment}"
-    OWNER = "${var.OWNER}"
-    ROLE = "${var.ROLE}"
-    AlwaysOn = "${var.AlwaysOn}"
+    Name        = var.vpcname
+    environment = var.environment
+    deployment  = var.deployment
+    OWNER       = var.OWNER
+    ROLE        = var.ROLE
+    AlwaysOn    = var.AlwaysOn
   }
 }
 
