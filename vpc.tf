@@ -12,7 +12,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_hostnames = true
   assign_generated_ipv6_cidr_block = "${var.ipv6}"
 
-  tags {
+  tags = {
     Name = "${var.vpcname}"
     environment = "${var.environment}"
     deployment = "${var.deployment}"
@@ -28,7 +28,7 @@ resource "aws_vpc" "vpc" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.vpc.id}"
 
-  tags {
+  tags = {
     Name = "${var.vpcname}"
     environment = "${var.environment}"
     deployment = "${var.deployment}"
@@ -55,7 +55,7 @@ resource "aws_subnet" "a" {
     ipv6_cidr_block = "${var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 10) : ""}"
     assign_ipv6_address_on_creation = true
 
-  tags {
+  tags = {
     Name = "${var.vpcname}-a"
     environment = "${var.environment}"
     deployment = "${var.deployment}"
@@ -74,7 +74,7 @@ resource "aws_subnet" "b" {
     ipv6_cidr_block = "${var.ipv6 ? cidrsubnet(aws_vpc.vpc.ipv6_cidr_block, 8, 11) : ""}"
     assign_ipv6_address_on_creation = true
 
-  tags {
+  tags = {
     Name = "${var.vpcname}-b"
     environment = "${var.environment}"
     deployment = "${var.deployment}"
@@ -119,7 +119,7 @@ resource "aws_default_route_table" "route" {
     gateway_id = "${aws_internet_gateway.gw.id}"
   }
 
-  tags {
+  tags = {
     Name = "${var.vpcname}"
     environment = "${var.environment}"
     deployment = "${var.deployment}"
@@ -189,7 +189,7 @@ resource "aws_default_security_group" "sg" {
       ipv6_cidr_blocks = ["::/0"]
     }
 
-  tags {
+  tags = {
     Name = "${var.vpcname}"
     environment = "${var.environment}"
     deployment = "${var.deployment}"

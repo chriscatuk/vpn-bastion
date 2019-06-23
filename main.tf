@@ -1,5 +1,5 @@
 module "vpn-server" {
-  source = "modules/gp-instance"
+  source = "./modules/gp-instance"
   
   project_name = "${var.vpcname}"
   subnet_id = "${aws_subnet.a.id}"
