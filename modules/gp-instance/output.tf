@@ -1,16 +1,17 @@
 output "private_ip" {
-  value = "${aws_instance.vpn_server.private_ip}"
+  value = aws_instance.vpn_server.private_ip
 }
+
 output "public_ip" {
-  value = "${aws_eip.ip.public_ip}"
+  value = aws_eip.ip.public_ip
 }
 
 output "id" {
-  value = "${aws_instance.vpn_server.id}"
+  value = aws_instance.vpn_server.id
 }
 
 output "ipv6_address" {
-  value = "${aws_instance.vpn_server.ipv6_addresses}"
+  value = aws_instance.vpn_server.ipv6_addresses
 }
 
 output "aws_console_link" {
@@ -18,8 +19,10 @@ output "aws_console_link" {
 }
 
 output "hostname" {
-  value = "${var.hostname}"
+  value = var.hostname
 }
+
 output "internal_hostname" {
   value = "internal-${var.hostname}"
 }
+
