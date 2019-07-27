@@ -3,6 +3,7 @@ version: '3'
 services:
   vpn:
     image: ipsec-vpn-server-private
+    network_mode: bridge
     restart: always
 #    env_file:
 #      - ./vpn.env
