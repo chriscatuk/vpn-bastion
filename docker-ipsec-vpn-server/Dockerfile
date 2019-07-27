@@ -8,6 +8,7 @@ WORKDIR /opt/src
 RUN apt-get -yqq update \
     && DEBIAN_FRONTEND=noninteractive \
        apt-get -yqq --no-install-recommends install \
+         apt-utils \
          wget dnsutils openssl ca-certificates kmod \
          iproute2 gawk grep sed net-tools iptables \
          bsdmainutils libcurl3-nss \
