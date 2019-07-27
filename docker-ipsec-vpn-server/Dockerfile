@@ -9,7 +9,7 @@ RUN apt-get -yqq update \
     && DEBIAN_FRONTEND=noninteractive \
        apt-get -yqq --no-install-recommends install \
          wget dnsutils openssl ca-certificates kmod \
-         iproute gawk grep sed net-tools iptables \
+         iproute2 gawk grep sed net-tools iptables \
          bsdmainutils libcurl3-nss \
          libnss3-tools libevent-dev libcap-ng0 xl2tpd \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
