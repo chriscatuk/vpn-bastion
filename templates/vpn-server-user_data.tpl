@@ -57,8 +57,8 @@ runcmd:
 # Setup as SSH Jump Server
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
 # Terraform
- - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -qP ~/
- - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
+ - wget https://releases.hashicorp.com/terraform/0.12.5/terraform_0.12.5_linux_amd64.zip -qP ~/
+ - unzip ~/terraform_0.12.5_linux_amd64.zip -d /usr/local/bin/
 # aws cli auth by Google
  - pip3 install aws-google-auth
 
