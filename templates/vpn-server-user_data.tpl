@@ -43,7 +43,7 @@ runcmd:
  - systemctl start yum-cron
 # Docker and Ansible
  - amazon-linux-extras install docker ansible2 -y
- - sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose
+ - sudo ccurl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/bin/docker-compose
  - sudo chmod +x /usr/bin/docker-compose
  - chkconfig docker on
  - systemctl start docker
