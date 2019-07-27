@@ -1,8 +1,7 @@
-FROM debian:stretch
-LABEL maintainer="Lin Song <linsongui@gmail.com>"
+FROM debian:buster
 
-ENV REFRESHED_AT 2018-01-29
-ENV SWAN_VER 3.23
+ENV REFRESHED_AT 2019-07-27
+ENV SWAN_VER 3.29
 
 WORKDIR /opt/src
 
