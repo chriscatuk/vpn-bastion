@@ -26,6 +26,7 @@ runcmd:
 # Clone VPN-Bastion repo 1/2: Settings
  - git_repo=https://github.com/chriscatuk/vpn-bastion.git
  - git_dir=/opt/github/vpn-bastion
+ - git_branch=update/debian-buster
  - docker_dir=$${git_dir}/docker-ipsec-vpn-server
 # Hostname
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
@@ -47,7 +48,7 @@ runcmd:
  - chkconfig docker on
  - systemctl start docker
 # Clone VPN-Bastion repo 2/2: Clone & Install
- - git clone --depth=1 $${git_repo} $${git_dir}
+ - git clone --depth=1 --branch $${git_branch} $${git_repo} $${git_dir}
  - modprobe af_key
  - docker build -t ipsec-vpn-server-private $${docker_dir}
  - echo "      - VPN_PASSWORD=${password}" >> $${docker_dir}/docker-compose.yml
