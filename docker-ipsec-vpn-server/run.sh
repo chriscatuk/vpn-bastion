@@ -169,6 +169,7 @@ EOF
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
+ipsec saref = no
 
 [lns default]
 ip range = $L2TP_POOL
