@@ -59,4 +59,4 @@ To Do
 -----
 
 - Enable IPv6 VPN (MacOS and iOS clients don't support IPv6)
-- Switch to IKEv2
+- Switch to IKEv2: https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv2
