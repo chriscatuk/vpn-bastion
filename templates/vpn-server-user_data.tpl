@@ -26,6 +26,7 @@ runcmd:
 # Clone VPN-Bastion repo 1/2: Settings
  - git_repo=https://github.com/chriscatuk/vpn-bastion.git
  - git_dir=/opt/github/vpn-bastion
+ - git_branch=update/debian-buster
  - docker_dir=$${git_dir}/docker-ipsec-vpn-server
 # Hostname
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
@@ -42,12 +43,12 @@ runcmd:
  - systemctl start yum-cron
 # Docker and Ansible
  - amazon-linux-extras install docker ansible2 -y
- - sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose
+ - sudo curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/bin/docker-compose
  - sudo chmod +x /usr/bin/docker-compose
  - chkconfig docker on
  - systemctl start docker
 # Clone VPN-Bastion repo 2/2: Clone & Install
- - git clone --depth=1 $${git_repo} $${git_dir}
+ - git clone --depth=1 --branch $${git_branch} $${git_repo} $${git_dir}
  - modprobe af_key
  - docker build -t ipsec-vpn-server-private $${docker_dir}
  - echo "      - VPN_PASSWORD=${password}" >> $${docker_dir}/docker-compose.yml
@@ -56,10 +57,8 @@ runcmd:
 # Setup as SSH Jump Server
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
 # Terraform
- - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -qP ~/
- - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
-# aws cli auth by Google
- - pip3 install aws-google-auth
+ - wget https://releases.hashicorp.com/terraform/0.12.5/terraform_0.12.5_linux_amd64.zip -qP ~/
+ - unzip ~/terraform_0.12.5_linux_amd64.zip -d /usr/local/bin/
 
 power_state:
    delay: "now"

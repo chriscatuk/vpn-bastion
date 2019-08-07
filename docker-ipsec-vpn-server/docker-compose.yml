@@ -1,11 +1,15 @@
-version: '2'
+version: '3'
 
 services:
   vpn:
     image: ipsec-vpn-server-private
+    network_mode: bridge
+    # dns:
+    #   - 8.8.8.8
+    #   - 8.8.4.4
     restart: always
-#    env_file:
-#      - ./vpn.env
+    # env_file:
+    #   - ./vpn.env
     ports:
       - "500:500/udp"
       - "4500:4500/udp"

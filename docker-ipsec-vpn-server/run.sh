@@ -169,6 +169,7 @@ EOF
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
 [global]
 port = 1701
+ipsec saref = no
 
 [lns default]
 ip range = $L2TP_POOL
@@ -285,5 +286,5 @@ modprobe af_key
 mkdir -p /var/run/pluto /var/run/xl2tpd
 rm -f /var/run/pluto/pluto.pid /var/run/xl2tpd.pid
 
-/usr/local/sbin/ipsec start --config /etc/ipsec.conf
+service ipsec start
 exec /usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf

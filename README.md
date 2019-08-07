@@ -51,10 +51,38 @@ You can use inline vars to overide terraform.tfvars and deploy in a different re
 - terraform destroy -var vpcname='VPN-Paris' -var region='eu-west-3' -var hostname='vpn-paris.domain.com'
 - terraform workspace delete paris
 
+VPN Clients setup on iOs or MacOS
+----------------------------------
+Follow this guide: https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv1_XAUTH_with_PSK
+
+Enable Logs
+-----------
+https://github.com/hwdsl2/docker-ipsec-vpn-server#enable-libreswan-logs
+
+To keep the Docker image small, Libreswan (IPsec) logs are not enabled by default. If you are an advanced user and wish to enable it for troubleshooting purposes, first start a Bash session in the running container:
+
+docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+Then run the following commands:
+
+```
+apt-get update && apt-get -y install rsyslog
+service rsyslog restart
+service ipsec restart
+sed -i '/pluto\.pid/a service rsyslog restart' /opt/src/run.sh
+exit
+```
+
+When finished, you may check Libreswan logs with:
+
+```
+docker exec -it ipsec-vpn-server grep pluto /var/log/auth.log
+docker exec -it ipsec-vpn-server tail -f pluto /var/log/auth.log
+```
+
+To check xl2tpd logs, run `docker logs ipsec-vpn-server`.
 
 To Do
 -----
 
-- Create API Gateway endpoints in order to start the instance only when needed from my Smartphone App.
-- Replace Terraform States storage in S3 backend by Consul or equivalent
 - Enable IPv6 VPN (MacOS and iOS clients don't support IPv6)
+- Switch to IKEv2: https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv2

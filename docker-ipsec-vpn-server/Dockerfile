@@ -1,16 +1,15 @@
-FROM debian:stretch
-LABEL maintainer="Lin Song <linsongui@gmail.com>"
+FROM debian:buster
 
-ENV REFRESHED_AT 2018-01-29
-ENV SWAN_VER 3.23
+ENV REFRESHED_AT 2019-07-27
+ENV SWAN_VER 3.29
 
 WORKDIR /opt/src
 
 RUN apt-get -yqq update \
     && DEBIAN_FRONTEND=noninteractive \
        apt-get -yqq --no-install-recommends install \
-         wget dnsutils openssl ca-certificates kmod \
-         iproute gawk grep sed net-tools iptables \
+         vim wget dnsutils openssl ca-certificates kmod \
+         iproute2 gawk grep sed net-tools iptables \
          bsdmainutils libcurl3-nss \
          libnss3-tools libevent-dev libcap-ng0 xl2tpd \
          libnss3-dev libnspr4-dev pkg-config libpam0g-dev \
