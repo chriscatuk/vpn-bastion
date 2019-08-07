@@ -51,10 +51,12 @@ You can use inline vars to overide terraform.tfvars and deploy in a different re
 - terraform destroy -var vpcname='VPN-Paris' -var region='eu-west-3' -var hostname='vpn-paris.domain.com'
 - terraform workspace delete paris
 
+VPN Clients setup on iOs or MacOS
+----------------------------------
+Follow this guide: https://libreswan.org/wiki/VPN_server_for_remote_clients_using_IKEv1_XAUTH_with_PSK
 
 To Do
 -----
 
-- Create API Gateway endpoints in order to start the instance only when needed from my Smartphone App.
-- Replace Terraform States storage in S3 backend by Consul or equivalent
 - Enable IPv6 VPN (MacOS and iOS clients don't support IPv6)
+- Switch to IKEv2
