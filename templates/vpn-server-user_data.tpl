@@ -26,7 +26,7 @@ runcmd:
 # Clone VPN-Bastion repo 1/2: Settings
  - git_repo=https://github.com/chriscatuk/vpn-bastion.git
  - git_dir=/opt/github/vpn-bastion
- - git_branch=update/debian-buster
+ - git_branch=master
  - docker_dir=$${git_dir}/docker-ipsec-vpn-server
 # Hostname
  - echo '127.0.0.1 ${hostname}' | sudo tee -a /etc/hosts
