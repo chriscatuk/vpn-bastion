@@ -61,7 +61,10 @@ https://github.com/hwdsl2/docker-ipsec-vpn-server#enable-libreswan-logs
 
 To keep the Docker image small, Libreswan (IPsec) logs are not enabled by default. If you are an advanced user and wish to enable it for troubleshooting purposes, first start a Bash session in the running container:
 
+```
 docker exec -it ipsec-vpn-server env TERM=xterm bash -l
+```
+
 Then run the following commands:
 
 ```
