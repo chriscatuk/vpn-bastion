@@ -2,7 +2,7 @@ version: '3'
 
 services:
   vpn:
-    image: ipsec-vpn-server-private
+    image: chriscat/ipsec-vpn-server
     network_mode: bridge
     # dns:
     #   - 8.8.8.8

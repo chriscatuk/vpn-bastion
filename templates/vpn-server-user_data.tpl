@@ -41,8 +41,8 @@ runcmd:
  - sed -i -e 's/download_updates = no/download_updates = yes/g' /etc/yum/yum-cron-hourly.conf
  - sed -i -e 's/apply_updates = no/apply_updates = yes/g' /etc/yum/yum-cron-hourly.conf
  - systemctl start yum-cron
-# Docker and Ansible
- - amazon-linux-extras install docker ansible2 -y
+# Docker
+ - amazon-linux-extras install docker -y
  - sudo curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/bin/docker-compose
  - sudo chmod +x /usr/bin/docker-compose
  - chkconfig docker on
@@ -50,15 +50,19 @@ runcmd:
 # Clone VPN-Bastion repo 2/2: Clone & Install
  - git clone --depth=1 --branch $${git_branch} $${git_repo} $${git_dir}
  - modprobe af_key
- - docker build -t ipsec-vpn-server-private $${docker_dir}
+ - cd $${git_dir}
+# Uncomment to build locally instead of using Docker Hub latest version
+# - docker build -t chriscat/ipsec-vpn-server $${docker_dir}
  - echo "      - VPN_PASSWORD=${password}" >> $${docker_dir}/docker-compose.yml
  - echo "      - VPN_IPSEC_PSK=${psk}" >> $${docker_dir}/docker-compose.yml
  - docker-compose -f $${docker_dir}/docker-compose.yml up -d
 # Setup as SSH Jump Server
  - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
+# Ansible
+# - amazon-linux-extras install ansible2 -y
 # Terraform
- - wget https://releases.hashicorp.com/terraform/0.12.5/terraform_0.12.5_linux_amd64.zip -qP ~/
- - unzip ~/terraform_0.12.5_linux_amd64.zip -d /usr/local/bin/
+# - wget https://releases.hashicorp.com/terraform/0.12.5/terraform_0.12.5_linux_amd64.zip -qP ~/
+# - unzip ~/terraform_0.12.5_linux_amd64.zip -d /usr/local/bin/
 
 power_state:
    delay: "now"
